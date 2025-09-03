@@ -381,7 +381,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#restricciones"><strong>Restricciones:</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#informacion-general-de-los-datos"><strong>Información general de los datos</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploracion-basica-eda"><strong>Exploración básica (EDA)</strong></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocesamiento"><strong>Preprocesamiento</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creacion-de-variables-objetivo-y-preprocesamiento"><strong>Creacion de variables objetivo y Preprocesamiento</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#division-de-datos"><strong>División de datos</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limpieza-de-datos-despues-de-la-particion-para-evitar-data-leakage"><strong>Limpieza de Datos después de la partición para evitar <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Leakage</span></code></strong></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manejo-de-atipicos"><strong>Manejo de Atípicos</strong></a></li>
@@ -1379,14 +1379,93 @@ dtype: int64
 <p>10 rows × 37 columns</p>
 </div></div></div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">convertir_numericas_a_object</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">numericas_validas</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convierte a tipo &#39;object&#39; todas las columnas numéricas excepto las especificadas en numericas_validas.</span>
+<span class="sd">    </span>
+<span class="sd">    Parámetros</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pd.DataFrame</span>
+<span class="sd">        Dataset original</span>
+<span class="sd">    numericas_validas : list</span>
+<span class="sd">        Lista de columnas que deben permanecer como numéricas</span>
+<span class="sd">    </span>
+<span class="sd">    Retorna</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame con los cambios aplicados</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int64&quot;</span><span class="p">,</span> <span class="s2">&quot;float64&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">numericas_validas</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+
+<span class="n">numericas</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;Previous qualification (grade)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Admission grade&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Age at enrollment&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Curricular units 1st sem (grade)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Curricular units 2nd sem (grade)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Unemployment rate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Inflation rate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GDP&quot;</span>
+<span class="p">]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">convertir_numericas_a_object</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">numericas</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">dtypes</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Marital status                                     object
+Application mode                                   object
+Application order                                  object
+Course                                             object
+Daytime/evening attendance\t                       object
+Previous qualification                             object
+Previous qualification (grade)                    float64
+Nacionality                                        object
+Mother&#39;s qualification                             object
+Father&#39;s qualification                             object
+Mother&#39;s occupation                                object
+Father&#39;s occupation                                object
+Admission grade                                   float64
+Displaced                                          object
+Educational special needs                          object
+Debtor                                             object
+Tuition fees up to date                            object
+Gender                                             object
+Scholarship holder                                 object
+Age at enrollment                                   int64
+International                                      object
+Curricular units 1st sem (credited)                object
+Curricular units 1st sem (enrolled)                object
+Curricular units 1st sem (evaluations)             object
+Curricular units 1st sem (approved)                object
+Curricular units 1st sem (grade)                  float64
+Curricular units 1st sem (without evaluations)     object
+Curricular units 2nd sem (credited)                object
+Curricular units 2nd sem (enrolled)                object
+Curricular units 2nd sem (evaluations)             object
+Curricular units 2nd sem (approved)                object
+Curricular units 2nd sem (grade)                  float64
+Curricular units 2nd sem (without evaluations)     object
+Unemployment rate                                 float64
+Inflation rate                                    float64
+GDP                                               float64
+Target                                             object
+dtype: object
+</pre></div>
+</div>
+</div>
+</div>
 </section>
-<section id="preprocesamiento">
-<h2><strong>Preprocesamiento</strong><a class="headerlink" href="#preprocesamiento" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p><strong>Categóricas</strong> → One-Hot Encoding</p></li>
-<li><p><strong>Numéricas</strong> → Estandarización (StandardScaler)</p></li>
-<li><p>Sin fuga de información: <code class="docutils literal notranslate"><span class="pre">ColumnTransformer</span></code> + <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></p></li>
-</ul>
+<section id="creacion-de-variables-objetivo-y-preprocesamiento">
+<h2><strong>Creacion de variables objetivo y Preprocesamiento</strong><a class="headerlink" href="#creacion-de-variables-objetivo-y-preprocesamiento" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Se convierte la variable target en binaria siendo 1:dropout y 0:No dropout.</span>
@@ -1412,24 +1491,15 @@ dtype: int64
 
 <span class="n">preprocess</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span>
     <span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">),</span> <span class="n">cat_cols</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;num&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">num_cols</span><span class="p">)</span>
     <span class="p">]</span>
 <span class="p">)</span>
  
-<span class="c1"># Se verifican los tipos de variables</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Categóricas:&quot;</span><span class="p">,</span> <span class="n">cat_cols</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Numéricas:&quot;</span><span class="p">,</span> <span class="n">num_cols</span><span class="p">)</span>
-
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Categóricas: []
-Numéricas: [&#39;Marital status&#39;, &#39;Application mode&#39;, &#39;Application order&#39;, &#39;Course&#39;, &#39;Daytime/evening attendance\t&#39;, &#39;Previous qualification&#39;, &#39;Previous qualification (grade)&#39;, &#39;Nacionality&#39;, &quot;Mother&#39;s qualification&quot;, &quot;Father&#39;s qualification&quot;, &quot;Mother&#39;s occupation&quot;, &quot;Father&#39;s occupation&quot;, &#39;Admission grade&#39;, &#39;Displaced&#39;, &#39;Educational special needs&#39;, &#39;Debtor&#39;, &#39;Tuition fees up to date&#39;, &#39;Gender&#39;, &#39;Scholarship holder&#39;, &#39;Age at enrollment&#39;, &#39;International&#39;, &#39;Curricular units 1st sem (credited)&#39;, &#39;Curricular units 1st sem (enrolled)&#39;, &#39;Curricular units 1st sem (evaluations)&#39;, &#39;Curricular units 1st sem (approved)&#39;, &#39;Curricular units 1st sem (grade)&#39;, &#39;Curricular units 1st sem (without evaluations)&#39;, &#39;Curricular units 2nd sem (credited)&#39;, &#39;Curricular units 2nd sem (enrolled)&#39;, &#39;Curricular units 2nd sem (evaluations)&#39;, &#39;Curricular units 2nd sem (approved)&#39;, &#39;Curricular units 2nd sem (grade)&#39;, &#39;Curricular units 2nd sem (without evaluations)&#39;, &#39;Unemployment rate&#39;, &#39;Inflation rate&#39;, &#39;GDP&#39;]
-</pre></div>
-</div>
 <div class="output text_html"><div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1675,39 +1745,39 @@ Numéricas: [&#39;Marital status&#39;, &#39;Application mode&#39;, &#39;Applicat
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Marital status                                      int64
-Application mode                                    int64
-Application order                                   int64
-Course                                              int64
-Daytime/evening attendance\t                        int64
-Previous qualification                              int64
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Marital status                                     object
+Application mode                                   object
+Application order                                  object
+Course                                             object
+Daytime/evening attendance\t                       object
+Previous qualification                             object
 Previous qualification (grade)                    float64
-Nacionality                                         int64
-Mother&#39;s qualification                              int64
-Father&#39;s qualification                              int64
-Mother&#39;s occupation                                 int64
-Father&#39;s occupation                                 int64
+Nacionality                                        object
+Mother&#39;s qualification                             object
+Father&#39;s qualification                             object
+Mother&#39;s occupation                                object
+Father&#39;s occupation                                object
 Admission grade                                   float64
-Displaced                                           int64
-Educational special needs                           int64
-Debtor                                              int64
-Tuition fees up to date                             int64
-Gender                                              int64
-Scholarship holder                                  int64
+Displaced                                          object
+Educational special needs                          object
+Debtor                                             object
+Tuition fees up to date                            object
+Gender                                             object
+Scholarship holder                                 object
 Age at enrollment                                   int64
-International                                       int64
-Curricular units 1st sem (credited)                 int64
-Curricular units 1st sem (enrolled)                 int64
-Curricular units 1st sem (evaluations)              int64
-Curricular units 1st sem (approved)                 int64
+International                                      object
+Curricular units 1st sem (credited)                object
+Curricular units 1st sem (enrolled)                object
+Curricular units 1st sem (evaluations)             object
+Curricular units 1st sem (approved)                object
 Curricular units 1st sem (grade)                  float64
-Curricular units 1st sem (without evaluations)      int64
-Curricular units 2nd sem (credited)                 int64
-Curricular units 2nd sem (enrolled)                 int64
-Curricular units 2nd sem (evaluations)              int64
-Curricular units 2nd sem (approved)                 int64
+Curricular units 1st sem (without evaluations)     object
+Curricular units 2nd sem (credited)                object
+Curricular units 2nd sem (enrolled)                object
+Curricular units 2nd sem (evaluations)             object
+Curricular units 2nd sem (approved)                object
 Curricular units 2nd sem (grade)                  float64
-Curricular units 2nd sem (without evaluations)      int64
+Curricular units 2nd sem (without evaluations)     object
 Unemployment rate                                 float64
 Inflation rate                                    float64
 GDP                                               float64
@@ -1720,22 +1790,6 @@ dtype: object
 </div>
 <section id="manejo-de-atipicos">
 <h3><strong>Manejo de Atípicos</strong><a class="headerlink" href="#manejo-de-atipicos" title="Link to this heading">#</a></h3>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">numericas</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;Previous qualification (grade)&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Admission grade&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Age at enrollment&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Curricular units 1st sem (grade)&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Curricular units 2nd sem (grade)&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Unemployment rate&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Inflation rate&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;GDP&quot;</span>
-    <span class="p">]</span>
-</pre></div>
-</div>
-</div>
-</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
@@ -1942,47 +1996,47 @@ Reportamos: Accuracy, Precision, Recall, F1, y AUC ROC.</p>
     <tr>
       <th>0</th>
       <td>3</td>
-      <td>0.835443</td>
-      <td>0.821561</td>
-      <td>0.622535</td>
-      <td>0.708333</td>
-      <td>0.854778</td>
+      <td>0.783906</td>
+      <td>0.701389</td>
+      <td>0.569014</td>
+      <td>0.628305</td>
+      <td>0.774895</td>
     </tr>
     <tr>
       <th>1</th>
       <td>5</td>
-      <td>0.843580</td>
-      <td>0.872951</td>
-      <td>0.600000</td>
-      <td>0.711185</td>
-      <td>0.872949</td>
+      <td>0.801085</td>
+      <td>0.758621</td>
+      <td>0.557746</td>
+      <td>0.642857</td>
+      <td>0.798070</td>
     </tr>
     <tr>
       <th>2</th>
       <td>7</td>
-      <td>0.837251</td>
-      <td>0.882096</td>
-      <td>0.569014</td>
-      <td>0.691781</td>
-      <td>0.878993</td>
+      <td>0.811935</td>
+      <td>0.797571</td>
+      <td>0.554930</td>
+      <td>0.654485</td>
+      <td>0.818887</td>
     </tr>
     <tr>
       <th>3</th>
       <td>9</td>
-      <td>0.840868</td>
-      <td>0.894273</td>
-      <td>0.571831</td>
-      <td>0.697595</td>
-      <td>0.889329</td>
+      <td>0.822785</td>
+      <td>0.832636</td>
+      <td>0.560563</td>
+      <td>0.670034</td>
+      <td>0.828086</td>
     </tr>
     <tr>
       <th>4</th>
       <td>11</td>
-      <td>0.839060</td>
-      <td>0.886463</td>
-      <td>0.571831</td>
-      <td>0.695205</td>
-      <td>0.891776</td>
+      <td>0.825497</td>
+      <td>0.855263</td>
+      <td>0.549296</td>
+      <td>0.668954</td>
+      <td>0.833171</td>
     </tr>
   </tbody>
 </table>
@@ -2004,7 +2058,7 @@ Reportamos: Accuracy, Precision, Recall, F1, y AUC ROC.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/f81ad7e0a1dc4076fd2d86b29390bf3d90968b8355b046d1074dbc5ac2c9252b.png" src="_images/f81ad7e0a1dc4076fd2d86b29390bf3d90968b8355b046d1074dbc5ac2c9252b.png" />
+<img alt="_images/5c1ddaf0059768eb3f96427c1abd1c797af9dd9ed1b6d60b6ef9bd7f7a2c5a97.png" src="_images/5c1ddaf0059768eb3f96427c1abd1c797af9dd9ed1b6d60b6ef9bd7f7a2c5a97.png" />
 </div>
 </div>
 <p>El gráfico anterior muestra el impacto del valor de <em>k</em> en las métricas de clasificación del modelo KNN. Se observa que la <strong>precisión</strong> (línea naranja) aumenta de forma continua conforme crece <em>k</em>, alcanzando su valor máximo en <em>k</em> = 11, lo que indica una reducción en los falsos positivos. En contraste, la <strong>recall</strong> (línea verde) disminuye progresivamente a medida que aumenta <em>k</em>, evidenciando una menor capacidad para detectar casos reales de abandono, especialmente a partir de <em>k</em> = 7. La <strong>exactitud</strong> (<em>accuracy</em>, línea azul) se mantiene relativamente estable, con un ligero pico en <em>k</em> = 5, mientras que el <strong>F1-score</strong> (línea roja) alcanza su máximo también en <em>k</em> = 5, confirmando que este valor ofrece el mejor equilibrio entre precisión y recall para el problema analizado.</p>
@@ -2018,13 +2072,13 @@ Reportamos: Accuracy, Precision, Recall, F1, y AUC ROC.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>k            5.000000
-Accuracy     0.843580
-Precision    0.872951
-Recall       0.600000
-F1           0.711185
-AUC          0.872949
-Name: 1, dtype: float64
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>k            9.000000
+Accuracy     0.822785
+Precision    0.832636
+Recall       0.560563
+F1           0.670034
+AUC          0.828086
+Name: 3, dtype: float64
 </pre></div>
 </div>
 </div>
@@ -2064,16 +2118,16 @@ Name: 1, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/f29982929f46c3c9cdfe1fb977f9ba27d119bdcbc0ee9694bc42c59712b15203.png" src="_images/f29982929f46c3c9cdfe1fb977f9ba27d119bdcbc0ee9694bc42c59712b15203.png" />
+<img alt="_images/cce99eec045cf739b63e7c3fb89360f911c8e23c7f8c3872077e919f833db354.png" src="_images/cce99eec045cf739b63e7c3fb89360f911c8e23c7f8c3872077e919f833db354.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Reporte de clasificación:
                precision    recall  f1-score   support
 
-           0      0.835     0.959     0.893       751
-           1      0.873     0.600     0.711       355
+           0      0.820     0.947     0.879       751
+           1      0.833     0.561     0.670       355
 
-    accuracy                          0.844      1106
-   macro avg      0.854     0.779     0.802      1106
-weighted avg      0.847     0.844     0.834      1106
+    accuracy                          0.823      1106
+   macro avg      0.826     0.754     0.774      1106
+weighted avg      0.824     0.823     0.812      1106
 </pre></div>
 </div>
 </div>
@@ -2093,8 +2147,8 @@ weighted avg      0.847     0.844     0.834      1106
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/a3f59ffca397ac3af2465de44a4e1fa4da13ec56448525dc8178d03fe95fa6fb.png" src="_images/a3f59ffca397ac3af2465de44a4e1fa4da13ec56448525dc8178d03fe95fa6fb.png" />
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AUC: 0.873
+<img alt="_images/32626dddd3af7855114451457d4b5bb81946c16bd88997ace589e163fe9cda1c.png" src="_images/32626dddd3af7855114451457d4b5bb81946c16bd88997ace589e163fe9cda1c.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AUC: 0.828
 </pre></div>
 </div>
 </div>
@@ -2153,37 +2207,37 @@ weighted avg      0.847     0.844     0.834      1106
     <tr>
       <th>0</th>
       <td>3</td>
-      <td>0.939232</td>
-      <td>1.632516</td>
-      <td>0.887672</td>
+      <td>0.301987</td>
+      <td>0.595294</td>
+      <td>0.985064</td>
     </tr>
     <tr>
       <th>1</th>
       <td>5</td>
-      <td>0.945050</td>
-      <td>1.623439</td>
-      <td>0.888918</td>
+      <td>0.310216</td>
+      <td>0.621179</td>
+      <td>0.983737</td>
     </tr>
     <tr>
       <th>2</th>
       <td>7</td>
-      <td>0.937910</td>
-      <td>1.600034</td>
-      <td>0.892098</td>
+      <td>0.323667</td>
+      <td>0.622383</td>
+      <td>0.983674</td>
     </tr>
     <tr>
       <th>3</th>
       <td>9</td>
-      <td>0.948981</td>
-      <td>1.587944</td>
-      <td>0.893722</td>
+      <td>0.341077</td>
+      <td>0.653350</td>
+      <td>0.982009</td>
     </tr>
     <tr>
       <th>4</th>
       <td>11</td>
-      <td>0.963727</td>
-      <td>1.591636</td>
-      <td>0.893227</td>
+      <td>0.355889</td>
+      <td>0.667327</td>
+      <td>0.981231</td>
     </tr>
   </tbody>
 </table>
@@ -2213,8 +2267,8 @@ weighted avg      0.847     0.844     0.834      1106
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/d87d73d82cb9cda3fe44f21f89e852fdfaf40d679c232d6c30f35636cac1fd3f.png" src="_images/d87d73d82cb9cda3fe44f21f89e852fdfaf40d679c232d6c30f35636cac1fd3f.png" />
-<img alt="_images/2a605e5df5a7390eee8f2439f4eabdbcf30f6fd468886b72619863ce6393f271.png" src="_images/2a605e5df5a7390eee8f2439f4eabdbcf30f6fd468886b72619863ce6393f271.png" />
+<img alt="_images/62ba68bbe9c48e344fd8ed2776d0d3484a5b0d740731469a0d7b76829002a176.png" src="_images/62ba68bbe9c48e344fd8ed2776d0d3484a5b0d740731469a0d7b76829002a176.png" />
+<img alt="_images/24e8858d2e772ca3177c961fbd6d24773da586a3e82928b1f6f53ad2d31740b5.png" src="_images/24e8858d2e772ca3177c961fbd6d24773da586a3e82928b1f6f53ad2d31740b5.png" />
 </div>
 </div>
 <p>Los gráficos de impacto de <em>k</em> en la regresión muestran que, tanto para el <strong>MAE</strong> como para el <strong>RMSE</strong>, el menor error se alcanza en <em>k</em> = 5, lo que coincide con el valor de <em>k</em> que maximiza el <strong>R²</strong>. A partir de ese punto, el incremento o disminución de <em>k</em> genera variaciones leves pero consistentes: valores pequeños de <em>k</em> (como 3) tienden a aumentar el RMSE, mientras que valores grandes (como 9 u 11) elevan ligeramente el MAE y reducen marginalmente la capacidad predictiva. El <strong>R²</strong> confirma que <em>k</em> = 5 ofrece el mejor ajuste, explicando aproximadamente el 91,2 % de la variabilidad del promedio final, seguido de cerca por <em>k</em> = 11. Estos resultados respaldan la elección de un valor intermedio de <em>k</em> para equilibrar el sesgo y la varianza en la predicción del rendimiento académico.</p>
@@ -2228,11 +2282,11 @@ weighted avg      0.847     0.844     0.834      1106
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>k       9.000000
-MAE     0.948981
-RMSE    1.587944
-R2      0.893722
-Name: 3, dtype: float64
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>k       3.000000
+MAE     0.301987
+RMSE    0.595294
+R2      0.985064
+Name: 0, dtype: float64
 </pre></div>
 </div>
 </div>
@@ -2263,11 +2317,11 @@ Name: 3, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mejor k (regresión): 9
-Métricas: {&#39;MAE&#39;: 0.9489814555396097, &#39;RMSE&#39;: np.float64(1.5879439723183115), &#39;R2&#39;: 0.8937222334308962}
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mejor k (regresión): 3
+Métricas: {&#39;MAE&#39;: 0.3019872791808799, &#39;RMSE&#39;: np.float64(0.5952938165036962), &#39;R2&#39;: 0.9850639825678242}
 </pre></div>
 </div>
-<img alt="_images/1e9569aab4bf4b7c4ac72f2e18967ccd22ee2ecc1dfda6bde0795006bf9dd382.png" src="_images/1e9569aab4bf4b7c4ac72f2e18967ccd22ee2ecc1dfda6bde0795006bf9dd382.png" />
+<img alt="_images/dd511132132e1050006087277b3bf67b63104dddcc2c0cbfbadae37186a5b700.png" src="_images/dd511132132e1050006087277b3bf67b63104dddcc2c0cbfbadae37186a5b700.png" />
 </div>
 </div>
 <p>El gráfico de dispersión <strong>Predicción vs. Valor real</strong> para el modelo KNN con <em>k</em> = 5 muestra una fuerte alineación de los puntos a lo largo de la diagonal, lo que indica una alta correspondencia entre las predicciones y los valores reales del <strong><code class="docutils literal notranslate"><span class="pre">promedio_final</span></code></strong>. Con un <strong>MAE</strong> de 0,911, <strong>RMSE</strong> de 1,447 y un <strong>R²</strong> de 0,912, el modelo presenta una capacidad predictiva sólida, explicando más del 91 % de la variabilidad en los datos. No obstante, se observan algunos puntos alejados de la diagonal, que representan casos atípicos o más difíciles de predecir, posiblemente asociados a estudiantes con rendimientos extremos (muy bajos o muy altos) o características atípicas en las variables de entrada.</p>
@@ -2363,7 +2417,7 @@ Métricas: {&#39;MAE&#39;: 0.9489814555396097, &#39;RMSE&#39;: np.float64(1.5879
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#restricciones"><strong>Restricciones:</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#informacion-general-de-los-datos"><strong>Información general de los datos</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploracion-basica-eda"><strong>Exploración básica (EDA)</strong></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocesamiento"><strong>Preprocesamiento</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creacion-de-variables-objetivo-y-preprocesamiento"><strong>Creacion de variables objetivo y Preprocesamiento</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#division-de-datos"><strong>División de datos</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limpieza-de-datos-despues-de-la-particion-para-evitar-data-leakage"><strong>Limpieza de Datos después de la partición para evitar <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Leakage</span></code></strong></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manejo-de-atipicos"><strong>Manejo de Atípicos</strong></a></li>
