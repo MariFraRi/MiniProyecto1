@@ -1,0 +1,2283 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ANALISIS EXPLORATORIO DE LOS DATOS &#8212; Predicción de Abandono y Rendimiento Académico con KNN</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'EDA';</script>
+    <link rel="icon" href="_static/logo.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Proyecto Integrador de Aprendizaje Automático — KNN (Clasificación y Regresión)" href="KNN_Proyecto_Integrador.html" />
+    <link rel="prev" title="Mini Proyecto 1 - Machine Learning" href="intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Predicción de Abandono y Rendimiento Académico con KNN - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Predicción de Abandono y Rendimiento Académico con KNN - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Mini Proyecto 1 - Machine Learning
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">ANALISIS EXPLORATORIO DE LOS DATOS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="KNN_Proyecto_Integrador.html"><strong>Proyecto Integrador de Aprendizaje Automático — KNN (Clasificación y Regresión)</strong></a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/MariFraRi/MiniProyecto1" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/MariFraRi/MiniProyecto1/issues/new?title=Issue%20on%20page%20%2FEDA.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/EDA.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>ANALISIS EXPLORATORIO DE LOS DATOS</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#informacion-general-de-los-datos"><strong>Información general de los datos</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribucion-de-target"><strong>Distribución de <code class="docutils literal notranslate"><span class="pre">Target</span></code></strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desbalance"><strong>Desbalance</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verificacion-de-normalidad"><strong>Verificación de normalidad</strong></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="analisis-exploratorio-de-los-datos">
+<h1>ANALISIS EXPLORATORIO DE LOS DATOS<a class="headerlink" href="#analisis-exploratorio-de-los-datos" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ==== Librerías ====</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;whitegrid&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="informacion-general-de-los-datos">
+<h2><strong>Información general de los datos</strong><a class="headerlink" href="#informacion-general-de-los-datos" title="Link to this heading">#</a></h2>
+<p>El conjunto de datos analizado contiene información académica y sociodemográfica de estudiantes universitarios, con un total de 4.424 registros y 37 variables. Estas variables incluyen datos numéricos (por ejemplo, edad, número de unidades curriculares aprobadas o reprobadas, promedio de calificaciones) y categóricos (por ejemplo, estado civil, tipo de curso, área de estudio).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">csv_path</span> <span class="o">=</span> <span class="s2">&quot;data.csv&quot;</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Marital status</th>
+      <th>Application mode</th>
+      <th>Application order</th>
+      <th>Course</th>
+      <th>Daytime/evening attendance\t</th>
+      <th>Previous qualification</th>
+      <th>Previous qualification (grade)</th>
+      <th>Nacionality</th>
+      <th>Mother's qualification</th>
+      <th>Father's qualification</th>
+      <th>...</th>
+      <th>Curricular units 2nd sem (credited)</th>
+      <th>Curricular units 2nd sem (enrolled)</th>
+      <th>Curricular units 2nd sem (evaluations)</th>
+      <th>Curricular units 2nd sem (approved)</th>
+      <th>Curricular units 2nd sem (grade)</th>
+      <th>Curricular units 2nd sem (without evaluations)</th>
+      <th>Unemployment rate</th>
+      <th>Inflation rate</th>
+      <th>GDP</th>
+      <th>Target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>17</td>
+      <td>5</td>
+      <td>171</td>
+      <td>1</td>
+      <td>1</td>
+      <td>122.0</td>
+      <td>1</td>
+      <td>19</td>
+      <td>12</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>0</td>
+      <td>10.8</td>
+      <td>1.4</td>
+      <td>1.74</td>
+      <td>Dropout</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>15</td>
+      <td>1</td>
+      <td>9254</td>
+      <td>1</td>
+      <td>1</td>
+      <td>160.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>3</td>
+      <td>...</td>
+      <td>0</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6</td>
+      <td>13.666667</td>
+      <td>0</td>
+      <td>13.9</td>
+      <td>-0.3</td>
+      <td>0.79</td>
+      <td>Graduate</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>1</td>
+      <td>5</td>
+      <td>9070</td>
+      <td>1</td>
+      <td>1</td>
+      <td>122.0</td>
+      <td>1</td>
+      <td>37</td>
+      <td>37</td>
+      <td>...</td>
+      <td>0</td>
+      <td>6</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>0</td>
+      <td>10.8</td>
+      <td>1.4</td>
+      <td>1.74</td>
+      <td>Dropout</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>17</td>
+      <td>2</td>
+      <td>9773</td>
+      <td>1</td>
+      <td>1</td>
+      <td>122.0</td>
+      <td>1</td>
+      <td>38</td>
+      <td>37</td>
+      <td>...</td>
+      <td>0</td>
+      <td>6</td>
+      <td>10</td>
+      <td>5</td>
+      <td>12.400000</td>
+      <td>0</td>
+      <td>9.4</td>
+      <td>-0.8</td>
+      <td>-3.12</td>
+      <td>Graduate</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2</td>
+      <td>39</td>
+      <td>1</td>
+      <td>8014</td>
+      <td>0</td>
+      <td>1</td>
+      <td>100.0</td>
+      <td>1</td>
+      <td>37</td>
+      <td>38</td>
+      <td>...</td>
+      <td>0</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6</td>
+      <td>13.000000</td>
+      <td>0</td>
+      <td>13.9</td>
+      <td>-0.3</td>
+      <td>0.79</td>
+      <td>Graduate</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 37 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(4424, 37)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Dimensiones (<code class="docutils literal notranslate"><span class="pre">df.shape</span></code>)</p>
+<ul class="simple">
+<li><p><strong>4,424 filas × 37 columnas</strong> → tamaño medio; suficiente para KNN/Reg. Logística.</p></li>
+<li><p><strong>37 features</strong></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">dtypes</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Marital status                                      int64
+Application mode                                    int64
+Application order                                   int64
+Course                                              int64
+Daytime/evening attendance\t                        int64
+Previous qualification                              int64
+Previous qualification (grade)                    float64
+Nacionality                                         int64
+Mother&#39;s qualification                              int64
+Father&#39;s qualification                              int64
+Mother&#39;s occupation                                 int64
+Father&#39;s occupation                                 int64
+Admission grade                                   float64
+Displaced                                           int64
+Educational special needs                           int64
+Debtor                                              int64
+Tuition fees up to date                             int64
+Gender                                              int64
+Scholarship holder                                  int64
+Age at enrollment                                   int64
+International                                       int64
+Curricular units 1st sem (credited)                 int64
+Curricular units 1st sem (enrolled)                 int64
+Curricular units 1st sem (evaluations)              int64
+Curricular units 1st sem (approved)                 int64
+Curricular units 1st sem (grade)                  float64
+Curricular units 1st sem (without evaluations)      int64
+Curricular units 2nd sem (credited)                 int64
+Curricular units 2nd sem (enrolled)                 int64
+Curricular units 2nd sem (evaluations)              int64
+Curricular units 2nd sem (approved)                 int64
+Curricular units 2nd sem (grade)                  float64
+Curricular units 2nd sem (without evaluations)      int64
+Unemployment rate                                 float64
+Inflation rate                                    float64
+GDP                                               float64
+Target                                             object
+dtype: object
+</pre></div>
+</div>
+</div>
+</div>
+<p>Tipos de datos (<code class="docutils literal notranslate"><span class="pre">df.dtypes</span></code>)</p>
+<ul class="simple">
+<li><p>Predominan <strong>int64</strong> y algunas <strong>float64</strong>.</p></li>
+<li><p>Varias <code class="docutils literal notranslate"><span class="pre">int64</span></code> son <strong>códigos categóricos</strong> (p. ej., <em>Marital status, Course, Debtor, International, Scholarship holder</em>)</p></li>
+<li><p>Continuas clave: <strong>Admission grade</strong>, <strong>Previous qualification (grade)</strong>, <strong>Inflation rate</strong>, <strong>GDP</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Target</span></code> es <code class="docutils literal notranslate"><span class="pre">object</span></code></p></li>
+<li><p>vamos a renombrar <code class="docutils literal notranslate"><span class="pre">Daytime/evening</span> <span class="pre">attendance\t</span></code> (tiene <em>tab</em>) antes del modelado.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Marital status                                    0
+Application mode                                  0
+Application order                                 0
+Course                                            0
+Daytime/evening attendance\t                      0
+Previous qualification                            0
+Previous qualification (grade)                    0
+Nacionality                                       0
+Mother&#39;s qualification                            0
+Father&#39;s qualification                            0
+Mother&#39;s occupation                               0
+Father&#39;s occupation                               0
+Admission grade                                   0
+Displaced                                         0
+Educational special needs                         0
+Debtor                                            0
+Tuition fees up to date                           0
+Gender                                            0
+Scholarship holder                                0
+Age at enrollment                                 0
+International                                     0
+Curricular units 1st sem (credited)               0
+Curricular units 1st sem (enrolled)               0
+Curricular units 1st sem (evaluations)            0
+Curricular units 1st sem (approved)               0
+Curricular units 1st sem (grade)                  0
+Curricular units 1st sem (without evaluations)    0
+Curricular units 2nd sem (credited)               0
+Curricular units 2nd sem (enrolled)               0
+Curricular units 2nd sem (evaluations)            0
+Curricular units 2nd sem (approved)               0
+Curricular units 2nd sem (grade)                  0
+Curricular units 2nd sem (without evaluations)    0
+Unemployment rate                                 0
+Inflation rate                                    0
+GDP                                               0
+Target                                            0
+dtype: int64
+</pre></div>
+</div>
+</div>
+</div>
+<p>Nulos (<code class="docutils literal notranslate"><span class="pre">df.isna().sum()</span></code>)</p>
+<ul class="simple">
+<li><p><strong>0 nulos en todas las columnas</strong></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Marital status</th>
+      <th>Application mode</th>
+      <th>Application order</th>
+      <th>Course</th>
+      <th>Daytime/evening attendance\t</th>
+      <th>Previous qualification</th>
+      <th>Previous qualification (grade)</th>
+      <th>Nacionality</th>
+      <th>Mother's qualification</th>
+      <th>Father's qualification</th>
+      <th>...</th>
+      <th>Curricular units 2nd sem (credited)</th>
+      <th>Curricular units 2nd sem (enrolled)</th>
+      <th>Curricular units 2nd sem (evaluations)</th>
+      <th>Curricular units 2nd sem (approved)</th>
+      <th>Curricular units 2nd sem (grade)</th>
+      <th>Curricular units 2nd sem (without evaluations)</th>
+      <th>Unemployment rate</th>
+      <th>Inflation rate</th>
+      <th>GDP</th>
+      <th>Target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>...</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424.000000</td>
+      <td>4424</td>
+    </tr>
+    <tr>
+      <th>unique</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>top</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Graduate</td>
+    </tr>
+    <tr>
+      <th>freq</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2209</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>1.178571</td>
+      <td>18.669078</td>
+      <td>1.727848</td>
+      <td>8856.642631</td>
+      <td>0.890823</td>
+      <td>4.577758</td>
+      <td>132.613314</td>
+      <td>1.873192</td>
+      <td>19.561935</td>
+      <td>22.275316</td>
+      <td>...</td>
+      <td>0.541817</td>
+      <td>6.232143</td>
+      <td>8.063291</td>
+      <td>4.435805</td>
+      <td>10.230206</td>
+      <td>0.150316</td>
+      <td>11.566139</td>
+      <td>1.228029</td>
+      <td>0.001969</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>0.605747</td>
+      <td>17.484682</td>
+      <td>1.313793</td>
+      <td>2063.566416</td>
+      <td>0.311897</td>
+      <td>10.216592</td>
+      <td>13.188332</td>
+      <td>6.914514</td>
+      <td>15.603186</td>
+      <td>15.343108</td>
+      <td>...</td>
+      <td>1.918546</td>
+      <td>2.195951</td>
+      <td>3.947951</td>
+      <td>3.014764</td>
+      <td>5.210808</td>
+      <td>0.753774</td>
+      <td>2.663850</td>
+      <td>1.382711</td>
+      <td>2.269935</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>0.000000</td>
+      <td>33.000000</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+      <td>95.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>7.600000</td>
+      <td>-0.800000</td>
+      <td>-4.060000</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>9085.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>125.000000</td>
+      <td>1.000000</td>
+      <td>2.000000</td>
+      <td>3.000000</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>5.000000</td>
+      <td>6.000000</td>
+      <td>2.000000</td>
+      <td>10.750000</td>
+      <td>0.000000</td>
+      <td>9.400000</td>
+      <td>0.300000</td>
+      <td>-1.700000</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>1.000000</td>
+      <td>17.000000</td>
+      <td>1.000000</td>
+      <td>9238.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>133.100000</td>
+      <td>1.000000</td>
+      <td>19.000000</td>
+      <td>19.000000</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>6.000000</td>
+      <td>8.000000</td>
+      <td>5.000000</td>
+      <td>12.200000</td>
+      <td>0.000000</td>
+      <td>11.100000</td>
+      <td>1.400000</td>
+      <td>0.320000</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>1.000000</td>
+      <td>39.000000</td>
+      <td>2.000000</td>
+      <td>9556.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>140.000000</td>
+      <td>1.000000</td>
+      <td>37.000000</td>
+      <td>37.000000</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>7.000000</td>
+      <td>10.000000</td>
+      <td>6.000000</td>
+      <td>13.333333</td>
+      <td>0.000000</td>
+      <td>13.900000</td>
+      <td>2.600000</td>
+      <td>1.790000</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>6.000000</td>
+      <td>57.000000</td>
+      <td>9.000000</td>
+      <td>9991.000000</td>
+      <td>1.000000</td>
+      <td>43.000000</td>
+      <td>190.000000</td>
+      <td>109.000000</td>
+      <td>44.000000</td>
+      <td>44.000000</td>
+      <td>...</td>
+      <td>19.000000</td>
+      <td>23.000000</td>
+      <td>33.000000</td>
+      <td>20.000000</td>
+      <td>18.571429</td>
+      <td>12.000000</td>
+      <td>16.200000</td>
+      <td>3.700000</td>
+      <td>3.510000</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>11 rows × 37 columns</p>
+</div></div></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">describe()</span></code></p>
+<ul class="simple">
+<li><p>Todas las columnas aparecen como <strong>numéricas</strong>, pero varias son <strong>códigos categóricos</strong> (p. ej., <em>Marital status, Course, Daytime/evening attendance</em>).</p></li>
+<li><p>Variables claramente continuas: <strong>Previous qualification (grade)</strong> (95–190), <strong>Admission grade</strong>, etc.; muestran rangos amplios y posible <strong>asimetría</strong>, por lo que conviene <strong>escalar/estandarizar</strong> (especialmente para KNN).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Daytime/evening</span> <span class="pre">attendance</span></code> es binaria (0/1) con media ≈0.89 → mayoría <strong>diurna/nocturna</strong> según codificación.</p></li>
+<li><p>Varias métricas académicas por semestre tienen valores bajos/promedios pequeños (p. ej., <em>credited 2nd sem</em>)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dups</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Filas duplicadas:&quot;</span><span class="p">,</span> <span class="n">dups</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">dups</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; Duplicados eliminados. Nuevas dimensiones:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Filas duplicadas: 0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">card</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cardinalidad (valores únicos) por columna (top 15):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">card</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">15</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Cardinalidad (valores únicos) por columna (top 15):
+Curricular units 1st sem (grade)          805
+Curricular units 2nd sem (grade)          786
+Admission grade                           620
+Previous qualification (grade)            101
+Father&#39;s occupation                        46
+Age at enrollment                          46
+Curricular units 1st sem (evaluations)     35
+Father&#39;s qualification                     34
+Mother&#39;s occupation                        32
+Curricular units 2nd sem (evaluations)     30
+Mother&#39;s qualification                     29
+Curricular units 1st sem (enrolled)        23
+Curricular units 1st sem (approved)        23
+Curricular units 2nd sem (enrolled)        22
+Curricular units 1st sem (credited)        21
+dtype: int64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Resumen de numéricas</span>
+<span class="n">num_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">num_cols</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Resumen estadístico de variables numéricas:&quot;</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">num_cols</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No se detectaron columnas numéricas.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Resumen estadístico de variables numéricas:
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Marital status</th>
+      <td>4424.0</td>
+      <td>1.178571</td>
+      <td>0.605747</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>6.000000</td>
+    </tr>
+    <tr>
+      <th>Application mode</th>
+      <td>4424.0</td>
+      <td>18.669078</td>
+      <td>17.484682</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>17.000000</td>
+      <td>39.000000</td>
+      <td>57.000000</td>
+    </tr>
+    <tr>
+      <th>Application order</th>
+      <td>4424.0</td>
+      <td>1.727848</td>
+      <td>1.313793</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.000000</td>
+      <td>2.000000</td>
+      <td>9.000000</td>
+    </tr>
+    <tr>
+      <th>Course</th>
+      <td>4424.0</td>
+      <td>8856.642631</td>
+      <td>2063.566416</td>
+      <td>33.00</td>
+      <td>9085.00</td>
+      <td>9238.000000</td>
+      <td>9556.000000</td>
+      <td>9991.000000</td>
+    </tr>
+    <tr>
+      <th>Daytime/evening attendance\t</th>
+      <td>4424.0</td>
+      <td>0.890823</td>
+      <td>0.311897</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>Previous qualification</th>
+      <td>4424.0</td>
+      <td>4.577758</td>
+      <td>10.216592</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>43.000000</td>
+    </tr>
+    <tr>
+      <th>Previous qualification (grade)</th>
+      <td>4424.0</td>
+      <td>132.613314</td>
+      <td>13.188332</td>
+      <td>95.00</td>
+      <td>125.00</td>
+      <td>133.100000</td>
+      <td>140.000000</td>
+      <td>190.000000</td>
+    </tr>
+    <tr>
+      <th>Nacionality</th>
+      <td>4424.0</td>
+      <td>1.873192</td>
+      <td>6.914514</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>109.000000</td>
+    </tr>
+    <tr>
+      <th>Mother's qualification</th>
+      <td>4424.0</td>
+      <td>19.561935</td>
+      <td>15.603186</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>19.000000</td>
+      <td>37.000000</td>
+      <td>44.000000</td>
+    </tr>
+    <tr>
+      <th>Father's qualification</th>
+      <td>4424.0</td>
+      <td>22.275316</td>
+      <td>15.343108</td>
+      <td>1.00</td>
+      <td>3.00</td>
+      <td>19.000000</td>
+      <td>37.000000</td>
+      <td>44.000000</td>
+    </tr>
+    <tr>
+      <th>Mother's occupation</th>
+      <td>4424.0</td>
+      <td>10.960895</td>
+      <td>26.418253</td>
+      <td>0.00</td>
+      <td>4.00</td>
+      <td>5.000000</td>
+      <td>9.000000</td>
+      <td>194.000000</td>
+    </tr>
+    <tr>
+      <th>Father's occupation</th>
+      <td>4424.0</td>
+      <td>11.032324</td>
+      <td>25.263040</td>
+      <td>0.00</td>
+      <td>4.00</td>
+      <td>7.000000</td>
+      <td>9.000000</td>
+      <td>195.000000</td>
+    </tr>
+    <tr>
+      <th>Admission grade</th>
+      <td>4424.0</td>
+      <td>126.978119</td>
+      <td>14.482001</td>
+      <td>95.00</td>
+      <td>117.90</td>
+      <td>126.100000</td>
+      <td>134.800000</td>
+      <td>190.000000</td>
+    </tr>
+    <tr>
+      <th>Displaced</th>
+      <td>4424.0</td>
+      <td>0.548373</td>
+      <td>0.497711</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>Educational special needs</th>
+      <td>4424.0</td>
+      <td>0.011528</td>
+      <td>0.106760</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>Debtor</th>
+      <td>4424.0</td>
+      <td>0.113698</td>
+      <td>0.317480</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>Tuition fees up to date</th>
+      <td>4424.0</td>
+      <td>0.880651</td>
+      <td>0.324235</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>Gender</th>
+      <td>4424.0</td>
+      <td>0.351718</td>
+      <td>0.477560</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>Scholarship holder</th>
+      <td>4424.0</td>
+      <td>0.248418</td>
+      <td>0.432144</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>Age at enrollment</th>
+      <td>4424.0</td>
+      <td>23.265145</td>
+      <td>7.587816</td>
+      <td>17.00</td>
+      <td>19.00</td>
+      <td>20.000000</td>
+      <td>25.000000</td>
+      <td>70.000000</td>
+    </tr>
+    <tr>
+      <th>International</th>
+      <td>4424.0</td>
+      <td>0.024864</td>
+      <td>0.155729</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>Curricular units 1st sem (credited)</th>
+      <td>4424.0</td>
+      <td>0.709991</td>
+      <td>2.360507</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>20.000000</td>
+    </tr>
+    <tr>
+      <th>Curricular units 1st sem (enrolled)</th>
+      <td>4424.0</td>
+      <td>6.270570</td>
+      <td>2.480178</td>
+      <td>0.00</td>
+      <td>5.00</td>
+      <td>6.000000</td>
+      <td>7.000000</td>
+      <td>26.000000</td>
+    </tr>
+    <tr>
+      <th>Curricular units 1st sem (evaluations)</th>
+      <td>4424.0</td>
+      <td>8.299051</td>
+      <td>4.179106</td>
+      <td>0.00</td>
+      <td>6.00</td>
+      <td>8.000000</td>
+      <td>10.000000</td>
+      <td>45.000000</td>
+    </tr>
+    <tr>
+      <th>Curricular units 1st sem (approved)</th>
+      <td>4424.0</td>
+      <td>4.706600</td>
+      <td>3.094238</td>
+      <td>0.00</td>
+      <td>3.00</td>
+      <td>5.000000</td>
+      <td>6.000000</td>
+      <td>26.000000</td>
+    </tr>
+    <tr>
+      <th>Curricular units 1st sem (grade)</th>
+      <td>4424.0</td>
+      <td>10.640822</td>
+      <td>4.843663</td>
+      <td>0.00</td>
+      <td>11.00</td>
+      <td>12.285714</td>
+      <td>13.400000</td>
+      <td>18.875000</td>
+    </tr>
+    <tr>
+      <th>Curricular units 1st sem (without evaluations)</th>
+      <td>4424.0</td>
+      <td>0.137658</td>
+      <td>0.690880</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>12.000000</td>
+    </tr>
+    <tr>
+      <th>Curricular units 2nd sem (credited)</th>
+      <td>4424.0</td>
+      <td>0.541817</td>
+      <td>1.918546</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>19.000000</td>
+    </tr>
+    <tr>
+      <th>Curricular units 2nd sem (enrolled)</th>
+      <td>4424.0</td>
+      <td>6.232143</td>
+      <td>2.195951</td>
+      <td>0.00</td>
+      <td>5.00</td>
+      <td>6.000000</td>
+      <td>7.000000</td>
+      <td>23.000000</td>
+    </tr>
+    <tr>
+      <th>Curricular units 2nd sem (evaluations)</th>
+      <td>4424.0</td>
+      <td>8.063291</td>
+      <td>3.947951</td>
+      <td>0.00</td>
+      <td>6.00</td>
+      <td>8.000000</td>
+      <td>10.000000</td>
+      <td>33.000000</td>
+    </tr>
+    <tr>
+      <th>Curricular units 2nd sem (approved)</th>
+      <td>4424.0</td>
+      <td>4.435805</td>
+      <td>3.014764</td>
+      <td>0.00</td>
+      <td>2.00</td>
+      <td>5.000000</td>
+      <td>6.000000</td>
+      <td>20.000000</td>
+    </tr>
+    <tr>
+      <th>Curricular units 2nd sem (grade)</th>
+      <td>4424.0</td>
+      <td>10.230206</td>
+      <td>5.210808</td>
+      <td>0.00</td>
+      <td>10.75</td>
+      <td>12.200000</td>
+      <td>13.333333</td>
+      <td>18.571429</td>
+    </tr>
+    <tr>
+      <th>Curricular units 2nd sem (without evaluations)</th>
+      <td>4424.0</td>
+      <td>0.150316</td>
+      <td>0.753774</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>12.000000</td>
+    </tr>
+    <tr>
+      <th>Unemployment rate</th>
+      <td>4424.0</td>
+      <td>11.566139</td>
+      <td>2.663850</td>
+      <td>7.60</td>
+      <td>9.40</td>
+      <td>11.100000</td>
+      <td>13.900000</td>
+      <td>16.200000</td>
+    </tr>
+    <tr>
+      <th>Inflation rate</th>
+      <td>4424.0</td>
+      <td>1.228029</td>
+      <td>1.382711</td>
+      <td>-0.80</td>
+      <td>0.30</td>
+      <td>1.400000</td>
+      <td>2.600000</td>
+      <td>3.700000</td>
+    </tr>
+    <tr>
+      <th>GDP</th>
+      <td>4424.0</td>
+      <td>0.001969</td>
+      <td>2.269935</td>
+      <td>-4.06</td>
+      <td>-1.70</td>
+      <td>0.320000</td>
+      <td>1.790000</td>
+      <td>3.510000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">TARGET</span> <span class="o">=</span> <span class="s2">&quot;Target&quot;</span>
+<span class="k">if</span> <span class="n">TARGET</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">vc</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">TARGET</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">dropna</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">vp</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">TARGET</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Distribución de Target (conteo y %):&quot;</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;conteo&quot;</span><span class="p">:</span> <span class="n">vc</span><span class="p">,</span> <span class="s2">&quot;porcentaje&quot;</span><span class="p">:</span> <span class="n">vp</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)}))</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+    <span class="n">vc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribución de Target&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Conteo&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Clase&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No se encontró la columna objetivo &#39;</span><span class="si">{</span><span class="n">TARGET</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Distribución de Target (conteo y %):
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>conteo</th>
+      <th>porcentaje</th>
+    </tr>
+    <tr>
+      <th>Target</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Graduate</th>
+      <td>2209</td>
+      <td>49.93</td>
+    </tr>
+    <tr>
+      <th>Dropout</th>
+      <td>1421</td>
+      <td>32.12</td>
+    </tr>
+    <tr>
+      <th>Enrolled</th>
+      <td>794</td>
+      <td>17.95</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><img alt="_images/27c51cc52b71826505a32256074f41844424eefd5e658263617220022fd28f20.png" src="_images/27c51cc52b71826505a32256074f41844424eefd5e658263617220022fd28f20.png" />
+</div>
+</div>
+<section id="distribucion-de-target">
+<h3><strong>Distribución de <code class="docutils literal notranslate"><span class="pre">Target</span></code></strong><a class="headerlink" href="#distribucion-de-target" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Graduate 49.93%</strong>, <strong>Dropout 32.12%</strong>, <strong>Enrolled 17.95%</strong></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">THRESH_HIGH</span> <span class="o">=</span> <span class="mf">0.75</span>  <span class="c1"># &gt;75%: MUY desbalanceada</span>
+<span class="n">THRESH_MED</span>  <span class="o">=</span> <span class="mf">0.60</span>  <span class="c1"># 60-75%: desbalanceada (usable con técnicas)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">recomendacion_balance</span><span class="p">(</span><span class="n">vc_norm</span><span class="p">,</span> <span class="n">thr_high</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">thr_med</span><span class="o">=</span><span class="mf">0.60</span><span class="p">):</span>
+    <span class="n">mayoritaria</span> <span class="o">=</span> <span class="n">vc_norm</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">clase</span> <span class="o">=</span> <span class="n">vc_norm</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">mayoritaria</span> <span class="o">&gt;</span> <span class="n">thr_high</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot; variable muy desbalanceada (clase mayoritaria &#39;</span><span class="si">{</span><span class="n">clase</span><span class="si">}</span><span class="s2">&#39; = </span><span class="si">{</span><span class="n">mayoritaria</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%). Recomendación: NO USAR.&quot;</span><span class="p">,</span> <span class="s2">&quot;no_usar&quot;</span>
+    <span class="k">elif</span> <span class="n">mayoritaria</span> <span class="o">&gt;</span> <span class="n">thr_med</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;variable Desbalanceada (clase mayoritaria &#39;</span><span class="si">{</span><span class="n">clase</span><span class="si">}</span><span class="s2">&#39; = </span><span class="si">{</span><span class="n">mayoritaria</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%).&quot;</span> <span class="p">,</span> <span class="s2">&quot;re_muestrear&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;variable Balanceada (clase mayoritaria &#39;</span><span class="si">{</span><span class="n">clase</span><span class="si">}</span><span class="s2">&#39; = </span><span class="si">{</span><span class="n">mayoritaria</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%). Recomendación: USAR.&quot;</span><span class="p">,</span> <span class="s2">&quot;usar&quot;</span>
+
+<span class="c1"># Opción: binarizar (Dropout vs resto) al estilo del EDA</span>
+<span class="n">MAP_TO_BINARY</span> <span class="o">=</span> <span class="kc">True</span>  
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">TARGET</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">MAP_TO_BINARY</span><span class="p">:</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s2">&quot;Enrolled&quot;</span><span class="p">:</span> <span class="s2">&quot;No_dropout&quot;</span><span class="p">,</span> <span class="s2">&quot;Graduate&quot;</span><span class="p">:</span> <span class="s2">&quot;No_dropout&quot;</span><span class="p">})</span>
+
+
+<span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="ow">and</span> <span class="n">y</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ℹ El Target parece continuo (regresión). El desbalance no aplica como en clasificación.&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">vc_norm</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">msg</span><span class="p">,</span> <span class="n">tag</span> <span class="o">=</span> <span class="n">recomendacion_balance</span><span class="p">(</span><span class="n">vc_norm</span><span class="p">,</span> <span class="n">THRESH_HIGH</span><span class="p">,</span> <span class="n">THRESH_MED</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>variable Desbalanceada (clase mayoritaria &#39;No_dropout&#39; = 67.88%).
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="desbalance">
+<h3><strong>Desbalance</strong><a class="headerlink" href="#desbalance" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Resultado: <strong>Desbalanceada</strong> (clase mayoritaria <code class="docutils literal notranslate"><span class="pre">No_dropout</span></code> = <strong>67.88%</strong>).</p></li>
+<li><p><strong>68%</strong> no desertan vs ~<strong>32%</strong> desertan.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# numéricas detectadas: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">num_cols</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">num_cols</span><span class="p">[:</span><span class="mi">30</span><span class="p">])</span>  <span class="c1"># muestra las primeras 30, por si hay muchas</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># numéricas detectadas: 36
+[&#39;Marital status&#39;, &#39;Application mode&#39;, &#39;Application order&#39;, &#39;Course&#39;, &#39;Daytime/evening attendance\t&#39;, &#39;Previous qualification&#39;, &#39;Previous qualification (grade)&#39;, &#39;Nacionality&#39;, &quot;Mother&#39;s qualification&quot;, &quot;Father&#39;s qualification&quot;, &quot;Mother&#39;s occupation&quot;, &quot;Father&#39;s occupation&quot;, &#39;Admission grade&#39;, &#39;Displaced&#39;, &#39;Educational special needs&#39;, &#39;Debtor&#39;, &#39;Tuition fees up to date&#39;, &#39;Gender&#39;, &#39;Scholarship holder&#39;, &#39;Age at enrollment&#39;, &#39;International&#39;, &#39;Curricular units 1st sem (credited)&#39;, &#39;Curricular units 1st sem (enrolled)&#39;, &#39;Curricular units 1st sem (evaluations)&#39;, &#39;Curricular units 1st sem (approved)&#39;, &#39;Curricular units 1st sem (grade)&#39;, &#39;Curricular units 1st sem (without evaluations)&#39;, &#39;Curricular units 2nd sem (credited)&#39;, &#39;Curricular units 2nd sem (enrolled)&#39;, &#39;Curricular units 2nd sem (evaluations)&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Solo graficar las numéricas más importantes vs Target ---</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">mutual_info_classif</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">TOP_N</span> <span class="o">=</span> <span class="mi">12</span>  <span class="c1"># cuántas columnas quieres graficar</span>
+
+<span class="c1"># 1) columnas numéricas</span>
+<span class="n">num_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">num_cols</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No hay columnas numéricas para evaluar.&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># 2) preparar X (numéricas) e y (códigos de la clase)</span>
+    <span class="n">X_num</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">num_cols</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+    <span class="n">X_num</span> <span class="o">=</span> <span class="n">X_num</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">X_num</span><span class="o">.</span><span class="n">median</span><span class="p">())</span>  <span class="c1"># solo para calcular MI</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">TARGET</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">codes</span>
+
+    <span class="c1"># 3) importancia por Mutual Information</span>
+    <span class="n">mi</span> <span class="o">=</span> <span class="n">mutual_info_classif</span><span class="p">(</span><span class="n">X_num</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">discrete_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">mi_series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">num_cols</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top variables por MI con Target:&quot;</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">mi_series</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">TOP_N</span><span class="p">))</span>
+
+    <span class="c1"># 4) graficar solo las TOP_N</span>
+    <span class="n">top_cols</span> <span class="o">=</span> <span class="n">mi_series</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">TOP_N</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">mi_series</span><span class="p">)))</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">top_cols</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distribuciones de variables numéricas (Top </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">top_cols</span><span class="p">)</span><span class="si">}</span><span class="s2"> por MI)&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.02</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Top variables por MI con Target:
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Curricular units 2nd sem (approved)       0.310207
+Curricular units 2nd sem (grade)          0.239324
+Curricular units 1st sem (approved)       0.233439
+Curricular units 1st sem (grade)          0.184882
+Tuition fees up to date                   0.100460
+Curricular units 2nd sem (evaluations)    0.096761
+Curricular units 1st sem (evaluations)    0.075691
+Age at enrollment                         0.065516
+Course                                    0.053425
+Curricular units 1st sem (enrolled)       0.052744
+Application mode                          0.046571
+Previous qualification (grade)            0.044584
+dtype: float64
+</pre></div>
+</div>
+<img alt="_images/3c9ad043124b8406a102b48a2056759c9c6579df135dfbeaa02967d017f8e498.png" src="_images/3c9ad043124b8406a102b48a2056759c9c6579df135dfbeaa02967d017f8e498.png" />
+</div>
+</div>
+<p>Top 12 numéricas</p>
+<ul class="simple">
+<li><p>Se repiten mucho las <strong>curricular units</strong> (approved/grade/evaluations/enrolled, 1º y 2º sem). Claramente son las que más se relacionan con el <strong>Target</strong>.</p></li>
+<li><p><strong>Age at enrollment</strong> está <strong>sesgada</strong> (muchos jóvenes). Para KNN conviene <strong>escalar</strong>.</p></li>
+<li><p><strong>Course</strong> y <strong>Application mode</strong> tienen picos tipo <strong>IDs</strong> → son <strong>categóricas</strong>, no continuas (one-hot).</p></li>
+<li><p>En general, antes de KNN: <strong>StandardScaler</strong> sí o sí (hay escalas muy distintas).</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">numericas</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span>
+<span class="n">numericas</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Marital status                                      6
+Application mode                                   18
+Application order                                   8
+Course                                             17
+Daytime/evening attendance\t                        2
+Previous qualification                             17
+Previous qualification (grade)                    101
+Nacionality                                        21
+Mother&#39;s qualification                             29
+Father&#39;s qualification                             34
+Mother&#39;s occupation                                32
+Father&#39;s occupation                                46
+Admission grade                                   620
+Displaced                                           2
+Educational special needs                           2
+Debtor                                              2
+Tuition fees up to date                             2
+Gender                                              2
+Scholarship holder                                  2
+Age at enrollment                                  46
+International                                       2
+Curricular units 1st sem (credited)                21
+Curricular units 1st sem (enrolled)                23
+Curricular units 1st sem (evaluations)             35
+Curricular units 1st sem (approved)                23
+Curricular units 1st sem (grade)                  805
+Curricular units 1st sem (without evaluations)     11
+Curricular units 2nd sem (credited)                19
+Curricular units 2nd sem (enrolled)                22
+Curricular units 2nd sem (evaluations)             30
+Curricular units 2nd sem (approved)                20
+Curricular units 2nd sem (grade)                  786
+Curricular units 2nd sem (without evaluations)     10
+Unemployment rate                                  10
+Inflation rate                                      9
+GDP                                                10
+dtype: int64
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="verificacion-de-normalidad">
+<h3><strong>Verificación de normalidad</strong><a class="headerlink" href="#verificacion-de-normalidad" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">shapiro</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_normalidad</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aplica el test de normalidad Shapiro-Wilk a las variables numéricas de un DataFrame</span>
+<span class="sd">    (válido para datasets con menos de 5000 registros).</span>
+
+<span class="sd">    Parámetros:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    df : pd.DataFrame</span>
+<span class="sd">        Dataset de entrada.</span>
+
+<span class="sd">    Retorna:</span>
+<span class="sd">    --------</span>
+<span class="sd">    pd.DataFrame con columnas:</span>
+<span class="sd">        - Variable</span>
+<span class="sd">        - Estadístico W</span>
+<span class="sd">        - p-valor</span>
+<span class="sd">        - Normalidad (Normal / No Normal / Datos insuficientes)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Seleccionar solo variables numéricas</span>
+    <span class="n">numericas</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">5000</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;⚠️ El dataset tiene 5000 o más registros, el test de Shapiro no es recomendado.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    
+    <span class="n">n_cols</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">n_rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">numericas</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_cols</span><span class="p">))</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">n_rows</span><span class="p">))</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>  <span class="c1"># Asegurar formato 1D para iterar</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">numericas</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">numericas</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;skyblue&quot;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Diagrama de Caja - </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+
+    <span class="c1"># Eliminar ejes sobrantes si hay menos gráficos que subplots</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)):</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">delaxes</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="n">resultados</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">numericas</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">datos</span> <span class="o">=</span> <span class="n">numericas</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">datos</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># Shapiro requiere al menos 3 valores</span>
+            <span class="n">stat</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">shapiro</span><span class="p">(</span><span class="n">datos</span><span class="p">)</span>
+            <span class="n">normalidad</span> <span class="o">=</span> <span class="s2">&quot;Normal&quot;</span> <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;</span> <span class="mf">0.05</span> <span class="k">else</span> <span class="s2">&quot;No Normal&quot;</span>
+            <span class="n">resultados</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">col</span><span class="p">,</span> <span class="n">stat</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">normalidad</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">resultados</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">col</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Datos insuficientes&quot;</span><span class="p">])</span>
+
+    <span class="n">resultados_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">resultados</span><span class="p">,</span> 
+                                 <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">,</span> <span class="s2">&quot;Estadístico W&quot;</span><span class="p">,</span> <span class="s2">&quot;p-valor&quot;</span><span class="p">,</span> <span class="s2">&quot;Normalidad&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">resultados_df</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">resultado</span> <span class="o">=</span> <span class="n">test_normalidad</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">resultado</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\franc\AppData\Local\Temp\ipykernel_11256\4162327466.py:45: UserWarning: Glyph 9 (	) missing from font(s) Arial.
+  plt.tight_layout()
+c:\Users\franc\anaconda3\envs\ml_env\Lib\site-packages\IPython\core\pylabtools.py:170: UserWarning: Glyph 9 (	) missing from font(s) Arial.
+  fig.canvas.print_figure(bytes_io, **kw)
+</pre></div>
+</div>
+<img alt="_images/4b2c1c7f2cf1d190172ec6efd86df7f2b6ee255e8eebd9fc4554a1973d5afdea.png" src="_images/4b2c1c7f2cf1d190172ec6efd86df7f2b6ee255e8eebd9fc4554a1973d5afdea.png" />
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Variable</th>
+      <th>Estadístico W</th>
+      <th>p-valor</th>
+      <th>Normalidad</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Marital status</td>
+      <td>0.325647</td>
+      <td>1.113040e-83</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Application mode</td>
+      <td>0.809773</td>
+      <td>3.489577e-58</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Application order</td>
+      <td>0.619069</td>
+      <td>1.378633e-71</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Course</td>
+      <td>0.391875</td>
+      <td>2.026925e-81</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Daytime/evening attendance\t</td>
+      <td>0.359607</td>
+      <td>1.514561e-82</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Previous qualification</td>
+      <td>0.386257</td>
+      <td>1.279505e-81</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Previous qualification (grade)</td>
+      <td>0.979897</td>
+      <td>1.443189e-24</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Nacionality</td>
+      <td>0.106444</td>
+      <td>5.395942e-90</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Mother's qualification</td>
+      <td>0.794115</td>
+      <td>1.224245e-59</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Father's qualification</td>
+      <td>0.785018</td>
+      <td>1.926982e-60</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Mother's occupation</td>
+      <td>0.278190</td>
+      <td>3.485294e-85</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Father's occupation</td>
+      <td>0.278900</td>
+      <td>3.665096e-85</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Admission grade</td>
+      <td>0.980482</td>
+      <td>3.176984e-24</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Displaced</td>
+      <td>0.633213</td>
+      <td>8.063567e-71</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Educational special needs</td>
+      <td>0.079837</td>
+      <td>1.148946e-90</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Debtor</td>
+      <td>0.367825</td>
+      <td>2.900461e-82</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Tuition fees up to date</td>
+      <td>0.377780</td>
+      <td>6.434962e-82</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Gender</td>
+      <td>0.603839</td>
+      <td>2.189078e-72</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Scholarship holder</td>
+      <td>0.537206</td>
+      <td>1.337077e-75</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>Age at enrollment</td>
+      <td>0.707169</td>
+      <td>2.421442e-66</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>International</td>
+      <td>0.139565</td>
+      <td>3.918112e-89</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>Curricular units 1st sem (credited)</td>
+      <td>0.343673</td>
+      <td>4.385246e-83</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>Curricular units 1st sem (enrolled)</td>
+      <td>0.730027</td>
+      <td>9.188823e-65</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>Curricular units 1st sem (evaluations)</td>
+      <td>0.902764</td>
+      <td>1.385502e-46</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>Curricular units 1st sem (approved)</td>
+      <td>0.885822</td>
+      <td>3.065710e-49</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>Curricular units 1st sem (grade)</td>
+      <td>0.684601</td>
+      <td>8.402219e-68</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>Curricular units 1st sem (without evaluations)</td>
+      <td>0.201943</td>
+      <td>1.977222e-87</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Curricular units 2nd sem (credited)</td>
+      <td>0.318655</td>
+      <td>6.595299e-84</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Curricular units 2nd sem (enrolled)</td>
+      <td>0.785451</td>
+      <td>2.101086e-60</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Curricular units 2nd sem (evaluations)</td>
+      <td>0.932363</td>
+      <td>7.264400e-41</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>Curricular units 2nd sem (approved)</td>
+      <td>0.918235</td>
+      <td>8.330056e-44</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>Curricular units 2nd sem (grade)</td>
+      <td>0.704320</td>
+      <td>1.565443e-66</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>Curricular units 2nd sem (without evaluations)</td>
+      <td>0.204098</td>
+      <td>2.274622e-87</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>Unemployment rate</td>
+      <td>0.934738</td>
+      <td>2.530875e-40</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>Inflation rate</td>
+      <td>0.923822</td>
+      <td>1.071902e-42</td>
+      <td>No Normal</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>GDP</td>
+      <td>0.912016</td>
+      <td>5.701000e-45</td>
+      <td>No Normal</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><strong>Mini Proyecto 1 - Machine Learning</strong></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="KNN_Proyecto_Integrador.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><strong>Proyecto Integrador de Aprendizaje Automático — KNN (Clasificación y Regresión)</strong></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#informacion-general-de-los-datos"><strong>Información general de los datos</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribucion-de-target"><strong>Distribución de <code class="docutils literal notranslate"><span class="pre">Target</span></code></strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desbalance"><strong>Desbalance</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verificacion-de-normalidad"><strong>Verificación de normalidad</strong></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Mariana Franco , Jerónimo Domínguez y Juen Andrés Ramos
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

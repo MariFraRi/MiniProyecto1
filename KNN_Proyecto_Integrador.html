@@ -61,7 +61,7 @@
     <link rel="icon" href="_static/logo.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Mini Proyecto 1 - Machine Learning" href="intro.html" />
+    <link rel="prev" title="ANALISIS EXPLORATORIO DE LOS DATOS" href="EDA.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -180,6 +180,7 @@
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="EDA.html">ANALISIS EXPLORATORIO DE LOS DATOS</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#"><strong>Proyecto Integrador de Aprendizaje Automático — KNN (Clasificación y Regresión)</strong></a></li>
 </ul>
 
@@ -382,6 +383,10 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploracion-basica-eda"><strong>Exploración básica (EDA)</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocesamiento"><strong>Preprocesamiento</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#division-de-datos"><strong>División de datos</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limpieza-de-datos-despues-de-la-particion-para-evitar-data-leakage"><strong>Limpieza de Datos después de la partición para evitar <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Leakage</span></code></strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manejo-de-atipicos"><strong>Manejo de Atípicos</strong></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#knn-clasificacion-abandona"><strong>KNN — Clasificación (<code class="docutils literal notranslate"><span class="pre">abandona</span></code>)</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#knn-regresion-promedio-final"><strong>KNN — Regresión (<code class="docutils literal notranslate"><span class="pre">promedio_final</span></code>)</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-y-conclusiones"><strong>Comparación y conclusiones</strong></a><ul class="nav section-nav flex-column">
@@ -1627,6 +1632,249 @@ Numéricas: [&#39;Marital status&#39;, &#39;Application mode&#39;, &#39;Applicat
 </div>
 </div>
 </section>
+<section id="limpieza-de-datos-despues-de-la-particion-para-evitar-data-leakage">
+<h2><strong>Limpieza de Datos después de la partición para evitar <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Leakage</span></code></strong><a class="headerlink" href="#limpieza-de-datos-despues-de-la-particion-para-evitar-data-leakage" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Index([&#39;Marital status&#39;, &#39;Application mode&#39;, &#39;Application order&#39;, &#39;Course&#39;,
+       &#39;Daytime/evening attendance\t&#39;, &#39;Previous qualification&#39;,
+       &#39;Previous qualification (grade)&#39;, &#39;Nacionality&#39;,
+       &#39;Mother&#39;s qualification&#39;, &#39;Father&#39;s qualification&#39;,
+       &#39;Mother&#39;s occupation&#39;, &#39;Father&#39;s occupation&#39;, &#39;Admission grade&#39;,
+       &#39;Displaced&#39;, &#39;Educational special needs&#39;, &#39;Debtor&#39;,
+       &#39;Tuition fees up to date&#39;, &#39;Gender&#39;, &#39;Scholarship holder&#39;,
+       &#39;Age at enrollment&#39;, &#39;International&#39;,
+       &#39;Curricular units 1st sem (credited)&#39;,
+       &#39;Curricular units 1st sem (enrolled)&#39;,
+       &#39;Curricular units 1st sem (evaluations)&#39;,
+       &#39;Curricular units 1st sem (approved)&#39;,
+       &#39;Curricular units 1st sem (grade)&#39;,
+       &#39;Curricular units 1st sem (without evaluations)&#39;,
+       &#39;Curricular units 2nd sem (credited)&#39;,
+       &#39;Curricular units 2nd sem (enrolled)&#39;,
+       &#39;Curricular units 2nd sem (evaluations)&#39;,
+       &#39;Curricular units 2nd sem (approved)&#39;,
+       &#39;Curricular units 2nd sem (grade)&#39;,
+       &#39;Curricular units 2nd sem (without evaluations)&#39;, &#39;Unemployment rate&#39;,
+       &#39;Inflation rate&#39;, &#39;GDP&#39;, &#39;Target&#39;, &#39;promedio_final&#39;],
+      dtype=&#39;object&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Tenemos entonces que todas las variables son numéricas y no normales excepto <code class="docutils literal notranslate"><span class="pre">Target</span></code> que es una variable categórica.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">dtypes</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Marital status                                      int64
+Application mode                                    int64
+Application order                                   int64
+Course                                              int64
+Daytime/evening attendance\t                        int64
+Previous qualification                              int64
+Previous qualification (grade)                    float64
+Nacionality                                         int64
+Mother&#39;s qualification                              int64
+Father&#39;s qualification                              int64
+Mother&#39;s occupation                                 int64
+Father&#39;s occupation                                 int64
+Admission grade                                   float64
+Displaced                                           int64
+Educational special needs                           int64
+Debtor                                              int64
+Tuition fees up to date                             int64
+Gender                                              int64
+Scholarship holder                                  int64
+Age at enrollment                                   int64
+International                                       int64
+Curricular units 1st sem (credited)                 int64
+Curricular units 1st sem (enrolled)                 int64
+Curricular units 1st sem (evaluations)              int64
+Curricular units 1st sem (approved)                 int64
+Curricular units 1st sem (grade)                  float64
+Curricular units 1st sem (without evaluations)      int64
+Curricular units 2nd sem (credited)                 int64
+Curricular units 2nd sem (enrolled)                 int64
+Curricular units 2nd sem (evaluations)              int64
+Curricular units 2nd sem (approved)                 int64
+Curricular units 2nd sem (grade)                  float64
+Curricular units 2nd sem (without evaluations)      int64
+Unemployment rate                                 float64
+Inflation rate                                    float64
+GDP                                               float64
+Target                                              int64
+promedio_final                                    float64
+dtype: object
+</pre></div>
+</div>
+</div>
+</div>
+<section id="manejo-de-atipicos">
+<h3><strong>Manejo de Atípicos</strong><a class="headerlink" href="#manejo-de-atipicos" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">numericas</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;Previous qualification (grade)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Admission grade&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Age at enrollment&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Curricular units 1st sem (grade)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Curricular units 2nd sem (grade)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unemployment rate&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Inflation rate&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GDP&quot;</span>
+    <span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ManejoAtipicos</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metodo</span><span class="o">=</span><span class="s2">&quot;iqr&quot;</span><span class="p">,</span> <span class="n">estrategia</span><span class="o">=</span><span class="s2">&quot;winsorizar&quot;</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">metodo</span> <span class="o">=</span> <span class="n">metodo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">estrategia</span> <span class="o">=</span> <span class="n">estrategia</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">limites_</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metodo</span> <span class="o">==</span> <span class="s2">&quot;iqr&quot;</span><span class="p">:</span>
+                <span class="n">Q1</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+                <span class="n">Q3</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span>
+                <span class="n">IQR</span> <span class="o">=</span> <span class="n">Q3</span> <span class="o">-</span> <span class="n">Q1</span>
+                <span class="n">lim_inf</span> <span class="o">=</span> <span class="n">Q1</span> <span class="o">-</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">IQR</span>
+                <span class="n">lim_sup</span> <span class="o">=</span> <span class="n">Q3</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">IQR</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">metodo</span> <span class="o">==</span> <span class="s2">&quot;percentil&quot;</span><span class="p">:</span>
+                <span class="n">lim_inf</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+                <span class="n">lim_sup</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.99</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Método no soportado&quot;</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">limites_</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">lim_inf</span><span class="p">,</span> <span class="n">lim_sup</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">lim_inf</span><span class="p">,</span> <span class="n">lim_sup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limites_</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">estrategia</span> <span class="o">==</span> <span class="s2">&quot;eliminar&quot;</span><span class="p">:</span>
+                <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[(</span><span class="n">X</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">lim_inf</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lim_sup</span><span class="p">)]</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">estrategia</span> <span class="o">==</span> <span class="s2">&quot;winsorizar&quot;</span><span class="p">:</span>
+                <span class="n">X</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lim_inf</span><span class="p">,</span> <span class="n">lim_inf</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+                <span class="n">X</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">lim_sup</span><span class="p">,</span> <span class="n">lim_sup</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">X</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># numericas en train y test de regresion </span>
+<span class="n">Xr_train_num</span> <span class="o">=</span> <span class="n">Xr_train</span><span class="p">[</span><span class="n">numericas</span><span class="p">]</span>
+<span class="n">Xr_test_num</span>  <span class="o">=</span> <span class="n">Xr_test</span><span class="p">[</span><span class="n">numericas</span><span class="p">]</span>
+
+<span class="c1"># Instanciar el manejador de atípicos</span>
+<span class="n">atipicos_reg</span> <span class="o">=</span> <span class="n">ManejoAtipicos</span><span class="p">(</span><span class="n">metodo</span><span class="o">=</span><span class="s2">&quot;iqr&quot;</span><span class="p">,</span> <span class="n">estrategia</span><span class="o">=</span><span class="s2">&quot;winsorizar&quot;</span><span class="p">)</span>
+
+<span class="c1"># Ajustar solo con TRAIN</span>
+<span class="n">atipicos_reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xr_train_num</span><span class="p">)</span>
+
+<span class="c1"># Transformar TRAIN y TEST</span>
+<span class="n">Xr_train_num_sin_atip</span> <span class="o">=</span> <span class="n">atipicos_reg</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xr_train_num</span><span class="p">)</span>
+<span class="n">Xr_test_num_sin_atip</span>  <span class="o">=</span> <span class="n">atipicos_reg</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xr_test_num</span><span class="p">)</span>
+
+<span class="c1"># numericas en train y test de regresion </span>
+<span class="n">Xc_train_num</span> <span class="o">=</span> <span class="n">Xc_train</span><span class="p">[</span><span class="n">numericas</span><span class="p">]</span>
+<span class="n">Xc_test_num</span>  <span class="o">=</span> <span class="n">Xc_test</span><span class="p">[</span><span class="n">numericas</span><span class="p">]</span>
+
+<span class="n">atipicos_clf</span> <span class="o">=</span> <span class="n">ManejoAtipicos</span><span class="p">(</span><span class="n">metodo</span><span class="o">=</span><span class="s2">&quot;iqr&quot;</span><span class="p">,</span> <span class="n">estrategia</span><span class="o">=</span><span class="s2">&quot;winsorizar&quot;</span><span class="p">)</span>
+
+<span class="n">atipicos_clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xc_train_num</span><span class="p">)</span>
+<span class="n">Xc_train_num_sin_atip</span> <span class="o">=</span> <span class="n">atipicos_clf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xc_train_num</span><span class="p">)</span>
+<span class="n">Xc_test_num_sin_atip</span>  <span class="o">=</span> <span class="n">atipicos_clf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xc_test_num</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">shapiro</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">boxplots</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    
+    <span class="c1"># Seleccionar solo variables numéricas</span>
+    <span class="n">numericas</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span>
+    
+    <span class="n">n_cols</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">n_rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">numericas</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_cols</span><span class="p">))</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">n_rows</span><span class="p">))</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>  <span class="c1"># Asegurar formato 1D para iterar</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">numericas</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">numericas</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;skyblue&quot;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Diagrama de Caja - </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+
+    <span class="c1"># Eliminar ejes sobrantes si hay menos gráficos que subplots</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)):</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">delaxes</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">boxplots</span><span class="p">(</span><span class="n">Xr_train_num</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/b3d2e5f4400ca7a560d5b7a12c22955944da10a164497db44feb02c37a77e85a.png" src="_images/b3d2e5f4400ca7a560d5b7a12c22955944da10a164497db44feb02c37a77e85a.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">boxplots</span><span class="p">(</span><span class="n">Xr_train_num_sin_atip</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/5eb35f800f95decb11db3f9c9d7b4717834fdf14c5dc011e066be626bec07e76.png" src="_images/5eb35f800f95decb11db3f9c9d7b4717834fdf14c5dc011e066be626bec07e76.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">numericas</span><span class="p">:</span>
+    <span class="n">Xr_train</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">=</span> <span class="n">Xr_train_num_sin_atip</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">Xr_test</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">Xr_test_num_sin_atip</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">Xc_train</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">=</span> <span class="n">Xc_train_num_sin_atip</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">Xc_test</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">Xc_test_num_sin_atip</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
 <section id="knn-clasificacion-abandona">
 <h2><strong>KNN — Clasificación (<code class="docutils literal notranslate"><span class="pre">abandona</span></code>)</strong><a class="headerlink" href="#knn-clasificacion-abandona" title="Link to this heading">#</a></h2>
 <p>Probaremos manualmente <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">∈</span> <span class="pre">{3,</span> <span class="pre">5,</span> <span class="pre">7,</span> <span class="pre">9,</span> <span class="pre">11}</span></code>.<br />
@@ -1694,47 +1942,47 @@ Reportamos: Accuracy, Precision, Recall, F1, y AUC ROC.</p>
     <tr>
       <th>0</th>
       <td>3</td>
-      <td>0.831826</td>
-      <td>0.823755</td>
-      <td>0.605634</td>
-      <td>0.698052</td>
-      <td>0.861323</td>
+      <td>0.835443</td>
+      <td>0.821561</td>
+      <td>0.622535</td>
+      <td>0.708333</td>
+      <td>0.854778</td>
     </tr>
     <tr>
       <th>1</th>
       <td>5</td>
-      <td>0.845389</td>
-      <td>0.868000</td>
-      <td>0.611268</td>
-      <td>0.717355</td>
-      <td>0.870199</td>
+      <td>0.843580</td>
+      <td>0.872951</td>
+      <td>0.600000</td>
+      <td>0.711185</td>
+      <td>0.872949</td>
     </tr>
     <tr>
       <th>2</th>
       <td>7</td>
-      <td>0.839060</td>
-      <td>0.879828</td>
-      <td>0.577465</td>
-      <td>0.697279</td>
-      <td>0.879777</td>
+      <td>0.837251</td>
+      <td>0.882096</td>
+      <td>0.569014</td>
+      <td>0.691781</td>
+      <td>0.878993</td>
     </tr>
     <tr>
       <th>3</th>
       <td>9</td>
-      <td>0.837251</td>
-      <td>0.885463</td>
-      <td>0.566197</td>
-      <td>0.690722</td>
-      <td>0.883305</td>
+      <td>0.840868</td>
+      <td>0.894273</td>
+      <td>0.571831</td>
+      <td>0.697595</td>
+      <td>0.889329</td>
     </tr>
     <tr>
       <th>4</th>
       <td>11</td>
       <td>0.839060</td>
-      <td>0.900452</td>
-      <td>0.560563</td>
-      <td>0.690972</td>
-      <td>0.887144</td>
+      <td>0.886463</td>
+      <td>0.571831</td>
+      <td>0.695205</td>
+      <td>0.891776</td>
     </tr>
   </tbody>
 </table>
@@ -1756,7 +2004,7 @@ Reportamos: Accuracy, Precision, Recall, F1, y AUC ROC.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/25b7cd6e4d624acd79c75ab12915c4340f9ec1681382e4c68884dfe67ec13b5f.png" src="_images/25b7cd6e4d624acd79c75ab12915c4340f9ec1681382e4c68884dfe67ec13b5f.png" />
+<img alt="_images/f81ad7e0a1dc4076fd2d86b29390bf3d90968b8355b046d1074dbc5ac2c9252b.png" src="_images/f81ad7e0a1dc4076fd2d86b29390bf3d90968b8355b046d1074dbc5ac2c9252b.png" />
 </div>
 </div>
 <p>El gráfico anterior muestra el impacto del valor de <em>k</em> en las métricas de clasificación del modelo KNN. Se observa que la <strong>precisión</strong> (línea naranja) aumenta de forma continua conforme crece <em>k</em>, alcanzando su valor máximo en <em>k</em> = 11, lo que indica una reducción en los falsos positivos. En contraste, la <strong>recall</strong> (línea verde) disminuye progresivamente a medida que aumenta <em>k</em>, evidenciando una menor capacidad para detectar casos reales de abandono, especialmente a partir de <em>k</em> = 7. La <strong>exactitud</strong> (<em>accuracy</em>, línea azul) se mantiene relativamente estable, con un ligero pico en <em>k</em> = 5, mientras que el <strong>F1-score</strong> (línea roja) alcanza su máximo también en <em>k</em> = 5, confirmando que este valor ofrece el mejor equilibrio entre precisión y recall para el problema analizado.</p>
@@ -1771,11 +2019,11 @@ Reportamos: Accuracy, Precision, Recall, F1, y AUC ROC.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>k            5.000000
-Accuracy     0.845389
-Precision    0.868000
-Recall       0.611268
-F1           0.717355
-AUC          0.870199
+Accuracy     0.843580
+Precision    0.872951
+Recall       0.600000
+F1           0.711185
+AUC          0.872949
 Name: 1, dtype: float64
 </pre></div>
 </div>
@@ -1816,16 +2064,16 @@ Name: 1, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/a0ddd7302f58a7b08745d9cf2e048ab32593dc13d50f7b45209772e34b9d4024.png" src="_images/a0ddd7302f58a7b08745d9cf2e048ab32593dc13d50f7b45209772e34b9d4024.png" />
+<img alt="_images/f29982929f46c3c9cdfe1fb977f9ba27d119bdcbc0ee9694bc42c59712b15203.png" src="_images/f29982929f46c3c9cdfe1fb977f9ba27d119bdcbc0ee9694bc42c59712b15203.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Reporte de clasificación:
                precision    recall  f1-score   support
 
-           0      0.839     0.956     0.894       751
-           1      0.868     0.611     0.717       355
+           0      0.835     0.959     0.893       751
+           1      0.873     0.600     0.711       355
 
-    accuracy                          0.845      1106
-   macro avg      0.853     0.784     0.805      1106
-weighted avg      0.848     0.845     0.837      1106
+    accuracy                          0.844      1106
+   macro avg      0.854     0.779     0.802      1106
+weighted avg      0.847     0.844     0.834      1106
 </pre></div>
 </div>
 </div>
@@ -1845,8 +2093,8 @@ weighted avg      0.848     0.845     0.837      1106
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/cbe1bb8efbec2fd8f0c6203e1eb7ed6dfc24ebc985dc22e0b93cdb311d85d1fb.png" src="_images/cbe1bb8efbec2fd8f0c6203e1eb7ed6dfc24ebc985dc22e0b93cdb311d85d1fb.png" />
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AUC: 0.870
+<img alt="_images/a3f59ffca397ac3af2465de44a4e1fa4da13ec56448525dc8178d03fe95fa6fb.png" src="_images/a3f59ffca397ac3af2465de44a4e1fa4da13ec56448525dc8178d03fe95fa6fb.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AUC: 0.873
 </pre></div>
 </div>
 </div>
@@ -1905,37 +2153,37 @@ weighted avg      0.848     0.845     0.837      1106
     <tr>
       <th>0</th>
       <td>3</td>
-      <td>0.945992</td>
-      <td>1.525204</td>
-      <td>0.901954</td>
+      <td>0.939232</td>
+      <td>1.632516</td>
+      <td>0.887672</td>
     </tr>
     <tr>
       <th>1</th>
       <td>5</td>
-      <td>0.911142</td>
-      <td>1.446795</td>
-      <td>0.911776</td>
+      <td>0.945050</td>
+      <td>1.623439</td>
+      <td>0.888918</td>
     </tr>
     <tr>
       <th>2</th>
       <td>7</td>
-      <td>0.932555</td>
-      <td>1.492781</td>
-      <td>0.906079</td>
+      <td>0.937910</td>
+      <td>1.600034</td>
+      <td>0.892098</td>
     </tr>
     <tr>
       <th>3</th>
       <td>9</td>
-      <td>0.946534</td>
-      <td>1.474814</td>
-      <td>0.908326</td>
+      <td>0.948981</td>
+      <td>1.587944</td>
+      <td>0.893722</td>
     </tr>
     <tr>
       <th>4</th>
       <td>11</td>
-      <td>0.956964</td>
-      <td>1.460258</td>
-      <td>0.910127</td>
+      <td>0.963727</td>
+      <td>1.591636</td>
+      <td>0.893227</td>
     </tr>
   </tbody>
 </table>
@@ -1965,8 +2213,8 @@ weighted avg      0.848     0.845     0.837      1106
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/886722be9c34c32b941a6df053d6e77f3b143b7d3d67c444f306d589381d4895.png" src="_images/886722be9c34c32b941a6df053d6e77f3b143b7d3d67c444f306d589381d4895.png" />
-<img alt="_images/1bfddf6d71dbda5ccddcca4ba5efb9cf8bdae9eeb3e8107b2e419fc49ad3e4fc.png" src="_images/1bfddf6d71dbda5ccddcca4ba5efb9cf8bdae9eeb3e8107b2e419fc49ad3e4fc.png" />
+<img alt="_images/d87d73d82cb9cda3fe44f21f89e852fdfaf40d679c232d6c30f35636cac1fd3f.png" src="_images/d87d73d82cb9cda3fe44f21f89e852fdfaf40d679c232d6c30f35636cac1fd3f.png" />
+<img alt="_images/2a605e5df5a7390eee8f2439f4eabdbcf30f6fd468886b72619863ce6393f271.png" src="_images/2a605e5df5a7390eee8f2439f4eabdbcf30f6fd468886b72619863ce6393f271.png" />
 </div>
 </div>
 <p>Los gráficos de impacto de <em>k</em> en la regresión muestran que, tanto para el <strong>MAE</strong> como para el <strong>RMSE</strong>, el menor error se alcanza en <em>k</em> = 5, lo que coincide con el valor de <em>k</em> que maximiza el <strong>R²</strong>. A partir de ese punto, el incremento o disminución de <em>k</em> genera variaciones leves pero consistentes: valores pequeños de <em>k</em> (como 3) tienden a aumentar el RMSE, mientras que valores grandes (como 9 u 11) elevan ligeramente el MAE y reducen marginalmente la capacidad predictiva. El <strong>R²</strong> confirma que <em>k</em> = 5 ofrece el mejor ajuste, explicando aproximadamente el 91,2 % de la variabilidad del promedio final, seguido de cerca por <em>k</em> = 11. Estos resultados respaldan la elección de un valor intermedio de <em>k</em> para equilibrar el sesgo y la varianza en la predicción del rendimiento académico.</p>
@@ -1980,11 +2228,11 @@ weighted avg      0.848     0.845     0.837      1106
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>k       5.000000
-MAE     0.911142
-RMSE    1.446795
-R2      0.911776
-Name: 1, dtype: float64
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>k       9.000000
+MAE     0.948981
+RMSE    1.587944
+R2      0.893722
+Name: 3, dtype: float64
 </pre></div>
 </div>
 </div>
@@ -2015,11 +2263,11 @@ Name: 1, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mejor k (regresión): 5
-Métricas: {&#39;MAE&#39;: 0.9111424648663086, &#39;RMSE&#39;: np.float64(1.4467951631583835), &#39;R2&#39;: 0.9117761176394323}
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mejor k (regresión): 9
+Métricas: {&#39;MAE&#39;: 0.9489814555396097, &#39;RMSE&#39;: np.float64(1.5879439723183115), &#39;R2&#39;: 0.8937222334308962}
 </pre></div>
 </div>
-<img alt="_images/608f014516d21add67251080e4e1e2bfaca3b426fa40e2314d730af6aef0d12e.png" src="_images/608f014516d21add67251080e4e1e2bfaca3b426fa40e2314d730af6aef0d12e.png" />
+<img alt="_images/1e9569aab4bf4b7c4ac72f2e18967ccd22ee2ecc1dfda6bde0795006bf9dd382.png" src="_images/1e9569aab4bf4b7c4ac72f2e18967ccd22ee2ecc1dfda6bde0795006bf9dd382.png" />
 </div>
 </div>
 <p>El gráfico de dispersión <strong>Predicción vs. Valor real</strong> para el modelo KNN con <em>k</em> = 5 muestra una fuerte alineación de los puntos a lo largo de la diagonal, lo que indica una alta correspondencia entre las predicciones y los valores reales del <strong><code class="docutils literal notranslate"><span class="pre">promedio_final</span></code></strong>. Con un <strong>MAE</strong> de 0,911, <strong>RMSE</strong> de 1,447 y un <strong>R²</strong> de 0,912, el modelo presenta una capacidad predictiva sólida, explicando más del 91 % de la variabilidad en los datos. No obstante, se observan algunos puntos alejados de la diagonal, que representan casos atípicos o más difíciles de predecir, posiblemente asociados a estudiantes con rendimientos extremos (muy bajos o muy altos) o características atípicas en las variables de entrada.</p>
@@ -2087,12 +2335,12 @@ Métricas: {&#39;MAE&#39;: 0.9111424648663086, &#39;RMSE&#39;: np.float64(1.4467
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="intro.html"
+       href="EDA.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><strong>Mini Proyecto 1 - Machine Learning</strong></p>
+        <p class="prev-next-title">ANALISIS EXPLORATORIO DE LOS DATOS</p>
       </div>
     </a>
 </div>
@@ -2117,6 +2365,10 @@ Métricas: {&#39;MAE&#39;: 0.9111424648663086, &#39;RMSE&#39;: np.float64(1.4467
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exploracion-basica-eda"><strong>Exploración básica (EDA)</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocesamiento"><strong>Preprocesamiento</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#division-de-datos"><strong>División de datos</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limpieza-de-datos-despues-de-la-particion-para-evitar-data-leakage"><strong>Limpieza de Datos después de la partición para evitar <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Leakage</span></code></strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manejo-de-atipicos"><strong>Manejo de Atípicos</strong></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#knn-clasificacion-abandona"><strong>KNN — Clasificación (<code class="docutils literal notranslate"><span class="pre">abandona</span></code>)</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#knn-regresion-promedio-final"><strong>KNN — Regresión (<code class="docutils literal notranslate"><span class="pre">promedio_final</span></code>)</strong></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-y-conclusiones"><strong>Comparación y conclusiones</strong></a><ul class="nav section-nav flex-column">
